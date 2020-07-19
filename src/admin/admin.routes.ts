@@ -17,7 +17,7 @@ export const registerAdminPanel = (DB_connection: unknown) => {
   AdminBro.registerAdapter(AdminBroMongoose)
   const adminBro = new AdminBro({
     databases: [DB_connection],
-    rootPath: '/admin',
+    rootPath: '/admin',  
     resources: [
       {resource: AdminUserModel, options: { parent: adminParent }}
     ]
