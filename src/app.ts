@@ -1,37 +1,31 @@
 import express, {  } from "express";
 import http from 'http'
-import { connect } from "mongoose";
 import socket from 'socket.io'
 import bodyParser from 'body-parser'
+
+import { registerAdminPanel } from './admin/admin.routes'
+import { connectToDB } from "./_helpers/DB";
 
 const app = express()
 const server = http.createServer(app);
 const io = socket(http)
 
 ;(async () => {
-  try {
-    const DB = process.env.DB as string
-    const DB_connection = DB && await connect(DB, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useUnifiedTopology: true
-    })
-  } catch (error) {
-    console.log(`server error: `, error.message)
-    process.exit(1);
-  }
-})()
+  const DB_connection = await connectToDB(process.env.DB as string);
+  app.use(express.json())
+  app.use(bodyParser.json())
 
-app.use(express.json())
-app.use(bodyParser.json())
+  const { router: Main } = await import('./routes/main.routes')
+  app.use("/", Main)
+
+  const { router: Admin, path = '/admin' } = registerAdminPanel(DB_connection)
+  app.use(path, Admin)
+})()
 
 io.on('connection', (_socket) => {
   console.log('a user connected');
 });
 
-import { router as Main } from './routes/main.routes'
-app.use("/", Main)
-
-
 const PORT = process.env.PORT || 3000 as number 
 server.listen(PORT, () => console.log(`server started on http://localhost:${PORT}`))
+
