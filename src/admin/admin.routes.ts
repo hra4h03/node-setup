@@ -31,6 +31,9 @@ export const registerAdminPanel = (DB_connection: unknown) => {
       return null
     },
     cookiePassword: process.env.SECRET_COOKIE || 'somasd1nda0asssjsdhb21uy3g',
+  }, null, {
+    resave: true,
+    saveUninitialized: true
   }) as Router
 
   return { router, path: adminBro.options.rootPath }
