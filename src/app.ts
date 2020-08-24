@@ -4,7 +4,7 @@ import socket from 'socket.io'
 import bodyParser from 'body-parser'
 
 import { registerAdminPanel } from './admin/admin.routes'
-import { connectToDB } from "./_helpers/DB";
+import { connectToDB } from "./helpers/DB";
 
 import dotenv from 'dotenv'
 dotenv.config()
